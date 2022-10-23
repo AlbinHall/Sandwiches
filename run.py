@@ -16,8 +16,9 @@ sales = SHEET.worksheet('sales')
 data = sales.get_all_values()
 print(data)
 
+
 def get_sales_data():
-    """ 
+    """
     get sales figures input from the user
     """
     print("Please enter sales data from the last market.")
@@ -28,24 +29,21 @@ def get_sales_data():
     sales_data = data_str.split(",")
     validate_data(sales_data)
 
-    
-
-
-
 
 def validate_data(values):
     """
-    inside try converts string values into integers
-    raises ValueError if data value cannot be converted into integers or dont match instructions
+    inside try converts string values into integers.
+    raises ValueError if data value cannot be converted into
+    integers or dont match instructions
     """
     try:
+        [int(value) for value in values]
         if len(values) != 6:
             raise ValueError(
                 f'Exactly 6 values required, You provided {len(values)}'
             )
     except ValueError as e:
         print(f"invalid data: {e}, please try again.\n")
-
 
 
 get_sales_data()
