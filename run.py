@@ -13,9 +13,7 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('love_sandwiches')
 
 sales = SHEET.worksheet('sales')
-
 data = sales.get_all_values()
-print(data)
 
 
 def get_sales_data():
@@ -66,6 +64,16 @@ def update_sales_worksheet(data):
     print(f"sales data update completed!\n")
 
 
+def update_surplus_worksheet(data):
+    """
+    update surplus worksheet
+    """
+    print(f'updating surplus worksheet..\n')
+    surplus_worksheet = SHEET.worksheet("surplus")
+    surplus_worksheet.append_row(data)
+    print(f'Update completed\n')
+
+
 def calculate_surplus_data(sales_row):
     """
     compares sales and stock and gives the surplus
@@ -78,8 +86,22 @@ def calculate_surplus_data(sales_row):
     for stock, sales in zip(stock_row, sales_row):
         surplus = int(stock) - sales
         surplus_data.append(surplus)
-    print(surplus_data)
+        
+    return surplus_data
 
+
+def get_last_five_records():
+    """
+    collecting the last 5 sales entry for the specifik sandwiches, getting sales of sale into list
+    """
+    sales = SHEET.worksheet("sales")
+
+
+    columns = []
+    for ind in range(1, 7):
+        column = sales.col_values(ind)
+        columns.append(column[-5:])
+    return columns 
 
 def main():
     """
@@ -88,8 +110,10 @@ def main():
     data = get_sales_data()
     sales_data = [int(num) for num in data]
     update_sales_worksheet(sales_data)
-    calculate_surplus_data(sales_data)
+    new_surplus_data = calculate_surplus_data(sales_data)
+    update_surplus_worksheet(new_surplus_data)
 
 
 print("Welcome to the sandwich data calculation")
-main()
+#main()
+sales_columns = get_last_five_records()
